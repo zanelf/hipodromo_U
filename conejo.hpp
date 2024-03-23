@@ -1,21 +1,29 @@
 #ifndef CONEJO_H
 #define CONEJO_H
-#include <stdlib.h>     /* srand, rand */
+#include <stdlib.h>     
 #include <time.h> 
+/*
+    clase de cada individuo contiene la
+    informacion minima para que cada conejo
+    funcione por su cuenta
+*/
 
 class conejo 
 {
 private:
-    char forma;
-    int vel;
+    char forma; // el caracter que representara al conejo
+    int vel; //su velocidad
 public:
-    conejo(char,int);
+    conejo(); //constructor por defecto (esta cosa esta definida como un constructor que no requiera nada para llamarse)
+    conejo(char,int); //constructor personalizable
     ~conejo();
-    void C_vel(int);
-    int get_vel();
-    char get_forma();
-    float correr();
+    int get_v();
+    char get_f();
+
+    int correr(); // funcion para ver cuanto avanzaria el conejo
 };
+
+
 
 
 #endif

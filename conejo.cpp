@@ -1,29 +1,35 @@
 #include"conejo.hpp"
 
-conejo::conejo(char forma, int vel){
+conejo::conejo(){ //si no quieres pensarla creara un conejo con una forma aleatoria entre muchas opciones
+    this->forma = rand()%79 + 47; //%27 + 97
+    this->vel = rand()%10+6;
+
+}
+
+conejo::conejo(char forma, int vel){ //constructor comun y silvestre
     this->forma = forma;
     this->vel = vel;
 }   
 
-conejo::~conejo(){
-    forma = '\0';
-    vel = 0;
+conejo::~conejo(){ 
+    forma = '\0'; //forma vacia
+    vel = 0; 
 }
 
-void conejo::C_vel(int v){
-    vel = v;
+char conejo::get_f(){
+    return forma; //entrega la forma del personaje
 }
 
-char conejo::get_forma(){
-    return forma;
+int conejo::get_v(){
+    return vel; //entrega la velocidad del personaje
 }
 
-int conejo::get_vel(){
-    return vel;
-}
-
-float conejo::correr(){
-    
-    float aux = ((rand()%10) + 1); 
-    return aux+vel;
+int conejo::correr(){     
+    /*
+    para hacer mas dinamica la carrera en vez de 
+    llamar a la velocidad se crea una variable aux
+    que entrega un valor aleatorio extra para la velocidad 
+    */
+    int aux = ((rand()%vel) - vel/2);  // el rango de aux puede ir entre la mitad de la velocidad hasta casi la mitad
+    return aux+vel; //la velocidad particular a la que se desplazara
 }
