@@ -17,7 +17,7 @@ int main(){
             erase();
             refresh();
             
-            for(int i = 0;i<juego.get_cants();i++){
+            for(int i = 0;i<juego.get_cants();i++){ //prueba de concepto
                 juego.carrera(i);
                 ganador = juego.ganador(i);
                 mvprintw(i,juego.get_pos(i),"%c",juego.mostrar_com(i).get_f());

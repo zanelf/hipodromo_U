@@ -11,6 +11,8 @@ conejo::conejo(char forma, int vel){ //constructor comun y silvestre
     this->vel = vel;
 }   
 
+
+
 conejo::~conejo(){ 
     forma = '\0'; //forma vacia
     vel = 0; 
