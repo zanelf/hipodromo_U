@@ -7,20 +7,31 @@
 int main(){
     srand(time(NULL));
     int comps = 3;
-    hipodromo juego(comps,200);
+    int dist_meta = 120;
+    hipodromo juego(comps,dist_meta);
     bool ganador = false;
 
     initscr();
-    for(int i = 0;i<20;i++){
-        erase();
-        refresh();
-        mvprintw(0,juego.carrera(0),"%c\n",juego.mostrar_com(0).get_f());
-        mvprintw(1,juego.carrera(1),"%c\n",juego.mostrar_com(1).get_f());
-        mvprintw(2,juego.carrera(2),"%c\n",juego.mostrar_com(2).get_f());
-        
+
+        while (!ganador){
+            erase();
+            refresh();
+            
+            for(int i = 0;i<juego.get_cants();i++){
+                juego.carrera(i);
+                ganador = juego.ganador(i);
+                mvprintw(i,juego.get_pos(i),"%c",juego.mostrar_com(i).get_f());
+                mvprintw(i,dist_meta,"=");
+                if(ganador)
+                    break;
+            }
         getch();
-         
-    }
+
+        }
+    
+    //std::cout<<"el ganador es\n\t\t"<<juego.mostrar_com(juego.get_podio()).get_f()<<" "<<juego.mostrar_com(juego.get_podio()).get_v()<<"\nel cual recorrio\n"<<juego.get_pos(juego.get_podio());
+    
+        
     endwin();
     return 0;
 }

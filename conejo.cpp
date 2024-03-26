@@ -2,7 +2,7 @@
 
 conejo::conejo(){ //si no quieres pensarla creara un conejo con una forma aleatoria entre muchas opciones
     this->forma = rand()%79 + 47; //%27 + 97
-    this->vel = rand()%10+6;
+    this->vel = rand()%4+2;
 
 }
 
