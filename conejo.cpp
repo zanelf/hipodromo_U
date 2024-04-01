@@ -16,6 +16,9 @@ conejo::conejo(char forma, int vel){ //constructor comun y silvestre
 conejo::~conejo(){ 
     forma = '\0'; //forma vacia
     vel = 0; 
+
+
+    
 }
 
 char conejo::get_f(){
