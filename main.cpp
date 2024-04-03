@@ -1,5 +1,6 @@
 #include <ncurses.h>
 
+
 #include "conejo.hpp"
 #include "hipodromo.hpp"
 #include<iostream>
