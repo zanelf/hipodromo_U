@@ -25,8 +25,11 @@ int main(){
                 if(ganador)
                     break;
             }
-        getch();
+//        getch();
 
+
+
+        usleep(300000);  
         }
     
     //std::cout<<"el ganador es\n\t\t"<<juego.mostrar_com(juego.get_podio()).get_f()<<" "<<juego.mostrar_com(juego.get_podio()).get_v()<<"\nel cual recorrio\n"<<juego.get_pos(juego.get_podio());
