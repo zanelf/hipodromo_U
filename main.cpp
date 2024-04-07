@@ -1,16 +1,17 @@
 #include <ncurses.h>
-
-
+#include <unistd.h>
 #include "conejo.hpp"
 #include "hipodromo.hpp"
 #include<iostream>
 
 int main(){
     srand(time(NULL));
-    int comps = 3;
-    int dist_meta = 120;
-    hipodromo juego(comps,dist_meta);
-    bool ganador = false;
+    //ejemplo simplificado de como funcionaria hipodromo
+
+    int comps = 8; //cantidad de competidores
+    int dist_meta = 120; // distancia para decir que se llego a una meta
+    hipodromo juego(comps,dist_meta); //carga las configuraciones dentro del juego
+    bool ganador = false; //un verificador sobre si ya se gano
 
     initscr();
 
@@ -25,19 +26,14 @@ int main(){
                 mvprintw(i,dist_meta,"=");
                 if(ganador)
                     break;
-            }
-//        getch();
-
-
-
-        usleep(300000);  
+            }            
+            //getch();
+            usleep(200000);          
         }
-    
-    //std::cout<<"el ganador es\n\t\t"<<juego.mostrar_com(juego.get_podio()).get_f()<<" "<<juego.mostrar_com(juego.get_podio()).get_v()<<"\nel cual recorrio\n"<<juego.get_pos(juego.get_podio());
     
         
     endwin();
     return 0;
 
-    
+
 }
