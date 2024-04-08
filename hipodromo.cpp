@@ -23,7 +23,27 @@ hipodromo::hipodromo(int cants,int meta){
 
 hipodromo::~hipodromo()
 {
-    this->cants = -1;
+    this->cants = -1;    for(int i = 0;i<cants;i++){
+        competidores[i] = conejo();
+        pos[i] = 0;
+    }
+}
+
+//setters 
+void hipodromo::set_cants(int nuevos){
+    if(nuevos <= max_comps){
+        if (nuevos>cants){
+                int aux = nuevos-cants;
+                for(int i = 0;i<aux;i++){
+                    competidores[cants+i] = conejo();
+                }
+            }
+            cants = nuevos;
+    }
+}
+
+void hipodromo::set_meta(int meta){
+    this->meta = meta;
 }
 
 //getters genericos
@@ -42,6 +62,9 @@ conejo hipodromo::mostrar_com(int i){ //un getter para todo un conejo
     return competidores[i];
 }
 
+int hipodromo::get_meta(){
+    return meta;
+}
 
 
 void hipodromo::carrera(int i){  
@@ -58,8 +81,16 @@ void hipodromo::carrera(int i){
 }
 
 bool hipodromo::ganador(int i){
-    if(pos[i] >= meta)
+    if(pos[i] >= meta)        
         return true;
     else
         return false;
+}
+
+void hipodromo::nueva_carrera(){
+    for(int i = 0;i<cants;i++)
+        pos[i] = 0;
+    
+
+
 }

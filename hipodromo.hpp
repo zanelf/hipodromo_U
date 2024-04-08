@@ -30,9 +30,14 @@ public:
     int get_pos(int);
     int get_podio();
     conejo mostrar_com(int);
+    int get_meta();
+    
+    void set_cants(int);
+    void set_meta(int);
 
     void carrera(int); //funcion que hace que un competidor corra
-    bool ganador(int); //revisa si el conejo de la posicion pedida paso la meta o no 
+    bool ganador(int); //revisa si el conejo de la posicion pedida paso la meta o no
+    void nueva_carrera(); 
 };
 
 
