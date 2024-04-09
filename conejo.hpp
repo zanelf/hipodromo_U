@@ -19,7 +19,6 @@ public:
     ~conejo();
     int get_v();
     char get_f();
-
     int correr(); // funcion para ver cuanto avanzaria el conejo
 };
 
