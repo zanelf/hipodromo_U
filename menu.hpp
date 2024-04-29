@@ -8,6 +8,7 @@ class menu {
         int dist_meta ; // distancia para decir que se llego a una meta
         hipodromo juego; //carga las configuraciones dentro del juego
         bool ganador ; //un verificador sobre si ya se gano
+        int num_vueltas; //cantidad de vueltas
 
     public:
         menu();// Inicializar ncurses aquí si es necesario

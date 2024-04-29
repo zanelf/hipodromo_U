@@ -3,8 +3,7 @@
 #include "conejo.hpp"
 #include <stdlib.h>     
 #include <time.h> 
-
-#define max_comps 100
+#define max_comps 8
 
 /*
 clase mayor que gestionara la resolucion de la
@@ -18,11 +17,14 @@ private:
     int cants; //cantidad de concursantes
     conejo competidores[max_comps]; // el arreglo de los competidores, con su velocidad y su figura 
     int pos[max_comps]; //arreglo que guardara la posicion actual de los competidores
+    int vueltas[max_comps]; //cuantas vueltas lleva el conejo
+    int num_vueltas; 
     int podio; //guarda al competidor que vaya a la cabeza
     int meta; //posicion de victoria 
+
 public:
     hipodromo(); //constructor rapido para llegar y arrancar
-    hipodromo(int,int); //constructor personalizado
+    hipodromo(int,int,int); //constructor personalizado
     ~hipodromo(); //si las cantidades son negativas no puedes hacer nada
 
 
@@ -31,8 +33,11 @@ public:
     int get_podio();
     conejo mostrar_com(int);
     int get_meta();
-    
+    int get_vuelta(int);
+    int get_num_vueltas();
+
     void set_cants(int);
+    void set_vueltas();
     void set_meta(int);
 
     void carrera(int); //funcion que hace que un competidor corra

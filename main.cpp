@@ -12,6 +12,7 @@ int main(){
 
     menu ventana;
     initscr();
+    
     ventana.imprimir_menu();
 
     getch();

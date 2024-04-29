@@ -1,13 +1,16 @@
 #include "menu.hpp"
-#include <ncurses.h>
 #include "hipodromo.hpp"
+#include <ncurses.h>
 #include <unistd.h>
+#include<pthread.h>
+
 
 menu::menu(){
-    this->comps = 5;
+    this->comps = 2;
     this->dist_meta = 120;
     this->ganador = false;
-    this->juego = hipodromo(comps,dist_meta);
+    this->num_vueltas = 3;
+    this->juego = hipodromo(comps,dist_meta,num_vueltas);
 }
 
 void menu::imprimir_menu() {
@@ -51,12 +54,12 @@ void menu::iniciar_carrera() {
                 juego.carrera(i);
                 ganador = juego.ganador(i);
                 mvprintw(i,juego.get_pos(i),"%c",juego.mostrar_com(i).get_f());
-                mvprintw(i,dist_meta,"=");
+                mvprintw(i,dist_meta,"||");
                 if(ganador)
                     break;
                 refresh();
             }            
-            usleep(200000);          
+            usleep(100000);          
         }
         erase();
         mvprintw(5,16,"el ganador es el conejo %d:\n\t\t\t\t%c",juego.get_podio(),juego.mostrar_com(juego.get_podio()).get_f());

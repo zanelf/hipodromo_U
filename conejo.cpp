@@ -36,5 +36,6 @@ int conejo::correr(){
     que entrega un valor aleatorio extra para la velocidad 
     */
     int aux = ((rand()%vel) - vel/2);  // el rango de aux puede ir entre la mitad de la velocidad hasta casi la mitad
-    return aux+vel; //la velocidad particular a la que se desplazara
+    //return aux+vel; //la velocidad particular a la que se desplazara
+    return rand()%2;
 }
