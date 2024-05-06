@@ -59,7 +59,7 @@ void menu::iniciar_carrera() {
                     break;
                 refresh();
             }            
-            usleep(100000);          
+            usleep(10000);          
         }
         erase();
         mvprintw(5,16,"el ganador es el conejo %d:\n\t\t\t\t%c",juego.get_podio(),juego.mostrar_com(juego.get_podio()).get_f());

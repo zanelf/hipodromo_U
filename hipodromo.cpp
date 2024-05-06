@@ -88,13 +88,20 @@ void hipodromo::carrera(int i){
         si llega a la linea de meta retorna un true y si no un false
     */
     pos[i]+=competidores[i].correr();
-    if(pos[i]> pos[podio]){
+    
+    if(meta == pos[i] && num_vueltas > vueltas[i]){
+        vueltas[i]++;
+        pos[i] = 0;
+    }
+
+    if(pos[i]> pos[podio]){ //revisa quien esta en primer puesto
         podio = i;
     }
+
 }
 
 bool hipodromo::ganador(int i){
-    if(pos[i] >= meta)        
+    if(pos[i] >= meta && vueltas[i] == num_vueltas)        
         return true;
     else
         return false;
@@ -103,7 +110,4 @@ bool hipodromo::ganador(int i){
 void hipodromo::nueva_carrera(){
     for(int i = 0;i<cants;i++)
         pos[i] = 0;
-    
-
-
 }
