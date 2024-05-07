@@ -4,6 +4,11 @@
 #include "hipodromo.hpp"
 #include "menu.hpp"
 #include<iostream>
+#include<pthread.h>
+
+#ifdef MUTEX
+pthread_mutex_t pantalla;
+#endif
 
 
 int main(){
@@ -12,6 +17,7 @@ int main(){
 
     menu ventana;
     initscr();
+    
     ventana.imprimir_menu();
 
     getch();
