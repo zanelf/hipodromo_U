@@ -105,8 +105,8 @@ void iniciar_carrera(){
                 competidores[i].posicion += rand()%2;  
                 continua = true; 
             }else{
-
                 continua = false;
+
                 podio.push_back(competidores[i]);
             }
         }
