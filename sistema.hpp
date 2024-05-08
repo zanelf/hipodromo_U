@@ -15,7 +15,7 @@ typedef struct{
 
 vector<conejo> competidores; //vector con toda la informacion que sera almacenada
 vector<conejo> podio;
-int meta=30; // distancia a la que estara la meta
+int Lmeta=30; // distancia a la que estara la meta
 int cantidad_vueltas = 3; //cantidad de vueltas necesarias para ganar
 
 
@@ -42,13 +42,13 @@ void reducir_competidores(int cants){
 
 bool estado_competidor(int i){ //revisara si ya a completado la carrera
     if(competidores[i].vueltas == cantidad_vueltas ){
-        if(competidores[i].posicion >= meta){
+        if(competidores[i].posicion >= Lmeta){
             return true;
         }else{
             return false;
         }
     }else{
-        if(competidores[i].posicion >= meta){
+        if(competidores[i].posicion >= Lmeta){
             competidores[i].vueltas = competidores[i].vueltas +1 ;
             competidores[i].posicion = 0;
         }

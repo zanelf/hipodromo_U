@@ -10,22 +10,23 @@
 
 #include<iostream>
 #include <time.h> 
-
+/* 
 #ifdef MUTEX
 pthread_mutex_t pantalla;
 #endif
 
-
+ */
 
 
 int main(){
     srand(time(NULL));
     //ejemplo simplificado de como funcionaria hipodromo
-
+    aumentar_competidores(4);
 
 #ifdef __linux__ 
-
-
+    initscr();
+    ventanaL();
+    endwin();
 
 #elif _WIN32
 
