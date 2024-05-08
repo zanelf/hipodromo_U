@@ -2,5 +2,9 @@
 /*.exe
 /ventana.txt
 /*.out
+<<<<<<< HEAD
 /Untitled-1.c
 /test
+=======
+/ventana.txt
+>>>>>>> refs/remotes/origin/main

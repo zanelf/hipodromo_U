@@ -1,29 +1,41 @@
-#include <ncurses.h>
-#include <unistd.h>
-#include "conejo.hpp"
-#include "hipodromo.hpp"
-#include "menu.hpp"
+#include "sistema.hpp"
+#ifdef __linux__  //si no esta en linux ignorara lo que este adentro
+    #include <ncurses.h>
+    #include <unistd.h>
+    #include<pthread.h>
+    #include"pantalla_L.hpp"
+#elif _WIN32
+    #include"pantalla_W.hpp"    
+#endif
+
 #include<iostream>
-#include<pthread.h>
+#include <time.h> 
 
 #ifdef MUTEX
 pthread_mutex_t pantalla;
 #endif
 
 
+
+
 int main(){
     srand(time(NULL));
     //ejemplo simplificado de como funcionaria hipodromo
 
-    menu ventana;
-    initscr();
-    
-    ventana.imprimir_menu();
 
-    getch();
-    endwin();
-   
+#ifdef __linux__ 
+
+
+
+#elif _WIN32
+
+
+    aumentar_competidores(4);
+
+    ventana();
+
+#else
+#endif
+
     return 0;
-
-
 }
