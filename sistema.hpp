@@ -2,61 +2,102 @@
 #define SISTEMA_HPP
 
 #include <algorithm>
-#include<vector>
+#include <vector>
+#include <thread>
+#include <mutex>
+#include <iostream>
+#include <chrono>
+#include <random>
+
 using namespace std;
 
-
-typedef struct{
-    char forma; //como se ve
-    int posicion; //cuanto a recorrido en una vuelta
-    int vueltas; //cuantas vueltas a llevado
+typedef struct {
+    char forma; 
+    int posicion; 
+    int vueltas; 
     bool completo;
-}conejo;
+} conejo;
 
-vector<conejo> competidores; //vector con toda la informacion que sera almacenada
+vector<conejo> competidores;
 vector<conejo> podio;
-int Lmeta=30; // distancia a la que estara la meta
-int cantidad_vueltas = 3; //cantidad de vueltas necesarias para ganar
+int Lmeta = 30; 
+int cantidad_vueltas = 3; 
 
+std::mutex mtx; // Mutex global para sincronización
 
+void estadoCarrera(const vector<conejo>& conejos) {
+    std::lock_guard<std::mutex> lock(mtx);
+    for (const auto& conejo : conejos) {
+        std::cout << "Conejo " << conejo.forma << ": Vuelta " << conejo.vueltas 
+                  << ", Posición " << conejo.posicion << std::endl;
+    }
+}
 
-void aumentar_competidores(int cants){ // aumenta la cantidad de competidores
+bool estado_competidor(int i) {
+    if (competidores[i].vueltas == cantidad_vueltas) {
+        if (competidores[i].posicion >= Lmeta) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        if (competidores[i].posicion >= Lmeta) {
+            competidores[i].vueltas++;
+            competidores[i].posicion = 0;
+        }
+        return false;
+    }
+}
 
-    if(cants >=0){ //verifica que sea un positivo
-        for(int i = 0;i< cants;i++){ //crea un conejo auxiliar y lo agrega a la lista
+void iniciar_carrera() {
+    bool continua = true;
+    do {
+        continua = false;
+        for (int i = 0; i < competidores.size(); i++) {
+            {
+                std::lock_guard<std::mutex> lock(mtx);
+                competidores[i].completo = estado_competidor(i); // Revisa cómo va el corredor
+                if (!competidores[i].completo) { // Si no ha completado su carrera, avanza
+                    competidores[i].posicion += rand() % 2;
+                    continua = true;
+                } else if (competidores[i].vueltas >= cantidad_vueltas && find(podio.begin(), podio.end(), competidores[i]) == podio.end()) {
+                    podio.push_back(competidores[i]);
+                }
+            }
+        }
+        estadoCarrera(competidores); // Mostrar el estado de la carrera
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    } while (continua);
+
+    std::cout << "\nCarrera finalizada. Podio:\n";
+    for (const auto& conejo : podio) {
+        std::cout << "Conejo " << conejo.forma << " completó " << conejo.vueltas << " vueltas.\n";
+    }
+}
+
+void lanzar_iniciar_carrera() {
+    std::thread carrera_thread(iniciar_carrera);
+    carrera_thread.join();
+}
+
+void aumentar_competidores(int cants) {
+    if (cants >= 0) {
+        for (int i = 0; i < cants; i++) {
             conejo aux;
-            aux.forma = rand()%79 + 47;
+            aux.forma = rand() % 79 + 47;
             aux.posicion = 0;
-            aux.vueltas = 1;
+            aux.vueltas = 0;
+            aux.completo = false;
             competidores.push_back(aux);
         }
     }
 }
 
-void reducir_competidores(int cants){
-    if(cants >=0){
-        for(int i = 0;i< cants;i++)
-           competidores.pop_back();
+void reducir_competidores(int cants) {
+    if (cants >= 0) {
+        for (int i = 0; i < cants; i++)
+            competidores.pop_back();
     }
 }
-
-bool estado_competidor(int i){ //revisara si ya a completado la carrera
-    if(competidores[i].vueltas == cantidad_vueltas ){
-        if(competidores[i].posicion >= Lmeta){
-            return true;
-        }else{
-            return false;
-        }
-    }else{
-        if(competidores[i].posicion >= Lmeta){
-            competidores[i].vueltas = competidores[i].vueltas +1 ;
-            competidores[i].posicion = 0;
-        }
-        return false;
-    }
-
-}
-
-
 
 #endif

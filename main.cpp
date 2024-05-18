@@ -22,7 +22,15 @@ int main(){
     srand(time(NULL));
     //ejemplo simplificado de como funcionaria hipodromo
     aumentar_competidores(4);
+    // Lanzar el hilo para iniciar la carrera
+    std::thread carrera_thread(lanzar_iniciar_carrera);
 
+    // Esperar un tiempo antes de finalizar la carrera
+    std::this_thread::sleep_for(std::chrono::seconds(10));
+
+    // Detener la carrera
+    carrera_thread.join();
+    
 #ifdef __linux__ 
     initscr();
     ventanaL();
