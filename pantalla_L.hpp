@@ -1,5 +1,6 @@
 #ifndef MENU_L
 #define MENU_L
+
 #include "sistema.hpp"
 #include<iostream>
 #include <ncurses.h>
@@ -12,11 +13,12 @@ void interaccion_competidores();
 void ajuste_Lmeta();
 void ajuste_vueltas();
 void iniciar_carrera();
+void ventanaL();
 
 void ventanaL(){
     erase();
-    int op,entrada;
-    do{
+    int op, entrada;
+    do {
         attron(A_BOLD | A_UNDERLINE);
         mvprintw(3, 33, "CARRERAS DE CONEJOS");
         attroff(A_BOLD | A_UNDERLINE);
@@ -27,31 +29,27 @@ void ventanaL(){
         mvprintw(9, 25, "5. Salir");
         mvprintw(11, 29, "Ingrese su opción: ");
         refresh();
-        entrada=scanw("%d",&op);
-
-
-
-    }while(entrada==FALSE || entrada==ERR || op<1 || op>5);
-    switch (op)
-    {
-    case 1:
-        iniciar_carrera();
-        break;
-    case 2:
-        interaccion_competidores();
-        break;
-    case 3:
-        ajuste_Lmeta();
-        break;
-    case 4:
-        ajuste_vueltas();
-        break;
-    case 5:
-        mvprintw(13,25,"cerrando aplicacion");
-        break;
+        entrada = scanw("%d", &op);
+    } while (entrada == FALSE || entrada == ERR || op < 1 || op > 5);
+    
+    switch (op) {
+        case 1:
+            pthread_t hilo;
+            pthread_create(&hilo, NULL, iniciar_carrera, NULL);
+            break;
+        case 2:
+            interaccion_competidores();
+            break;
+        case 3:
+            ajuste_Lmeta();
+            break;
+        case 4:
+            ajuste_vueltas();
+            break;
+        case 5:
+            mvprintw(13, 25, "Cerrando aplicación");
+            break;
     }
-
-
 }
 
 void interaccion_competidores(){
@@ -151,4 +149,3 @@ int terminados;
 }
 
 #endif
-

@@ -1,0 +1,480 @@
+
+//main.cpp
+#include "sistema.hpp"
+#ifdef __linux__  //si no esta en linux ignorara lo que este adentro
+    #include <ncurses.h>
+    #include <unistd.h>
+    #include<pthread.h>
+    #include"pantalla_L.hpp"
+#elif _WIN32
+    #include"pantalla_W.hpp"    
+#endif
+
+#include<iostream>
+#include <time.h> 
+/* 
+#ifdef MUTEX
+pthread_mutex_t pantalla;
+#endif
+
+ */
+
+
+int main(){
+    srand(time(NULL));
+    //ejemplo simplificado de como funcionaria hipodromo
+    aumentar_competidores(4);
+    iniciar_carreras();
+    imprimir_resultados();
+#ifdef __linux__ 
+    initscr();
+    ventanaL();
+    endwin();
+
+#elif _WIN32
+
+
+    aumentar_competidores(4);
+
+    ventana();
+
+#else
+#endif
+
+    return 0;
+}
+
+
+//pantalla_l.hpp
+#ifndef MENU_L
+#define MENU_L
+#include "sistema.hpp"
+#include<iostream>
+#include <ncurses.h>
+#include <unistd.h>
+#include<pthread.h>
+
+using namespace std;
+
+void interaccion_competidores();
+void ajuste_Lmeta();
+void ajuste_vueltas();
+void iniciar_carrera();
+
+
+
+void ventanaL(){
+    erase();
+    int op,entrada;
+    do{
+        attron(A_BOLD | A_UNDERLINE);
+        mvprintw(3, 33, "CARRERAS DE CONEJOS");
+        attroff(A_BOLD | A_UNDERLINE);
+        mvprintw(5, 25, "1. Iniciar carrera");
+        mvprintw(6, 25, "2. Cambiar cantidad de competidores");
+        mvprintw(7, 25, "3. Cambiar distancia de la meta");
+        mvprintw(7, 25, "4. cambiar cantidad de vueltas");
+        mvprintw(8, 25, "5. Salir");
+        mvprintw(11, 29, "Ingrese su opción: ");
+        refresh();
+        entrada=scanw("%d",&op);
+
+
+
+    }while(entrada==FALSE || entrada==ERR || op<1 || op>5);
+    switch (op)
+    {
+    case 1:
+        pthreat_t hilo;
+        pthread_create(&hilo,NULL,hilo_carrera,NULL);
+        break;
+    case 2:
+        interaccion_competidores();
+        break;
+    case 3:
+        ajuste_Lmeta();
+        break;
+    case 4:
+        ajuste_vueltas();
+        break;
+    case 5:
+        mvprintw(13,25,"cerrando aplicacion");
+        break;
+    }
+
+
+}
+
+
+
+void interaccion_competidores(){
+    erase();
+    int op2,n;
+    mvprintw(1,12,"actualmente tiene %lu competidores",competidores.size());
+    mvprintw(2,12,"que accion quiere realizar:");
+        mvprintw(4,16,"1.agregar competidores");
+        mvprintw(5,16,"2.eliminar competidores");
+        mvprintw(6,16,"3.volver");
+        refresh();
+    //verifica que elige entre las opciones entregadas
+    do{
+        scanw("%d",&op2);
+    }while(op2!=1 || op2!=2 || op2!=3);
+    //en funcion de que elija agregara o quitara corredores 
+    erase();
+    switch (op2)
+    {
+    case 1:
+        mvprintw(3,4,"cuantos miembros quiere agregar: ");
+           scanw("%d",&n);
+        aumentar_competidores(n);
+        break;
+    case 2:
+        mvprintw(3,4,"cuantos miembros quiere eliminar: ");
+           scanw("%d",&n);
+        reducir_competidores(n);
+        break;        
+    }
+    ventanaL();
+}
+
+void ajuste_Lmeta(){
+    cout<<"donde quiere ubicar la meta (ingrese un numero mayor a 10 para crear un cambio)\nactualmente la meta esta a "<<meta<<" metros\n\t\t";
+    
+    int n;
+    cin>>n;    
+    if(n >= 10){
+        Lmeta = n;
+    }
+    ventanaL();
+}
+
+void ajuste_vueltas(){
+    cout<<"cuantas vueltas quiere que realicen los conejos\nactualmente los conejos realizaran "<<cantidad_vueltas<<"\n\t\t\t";
+    int n;
+    cin>>n;
+    if(n > 0){
+        cantidad_vueltas = n;
+    }
+    ventanaL();
+}
+
+void iniciar_carrera(){
+    bool continua = true;
+    do{
+        for(int i = 0;i<competidores.size();i++){
+            competidores[i].completo = estado_competidor(i); //revisa como va el corredor
+            if(!competidores[i].completo){ //si no a completado su carrera avanza
+                competidores[i].posicion += rand()%2;  
+                continua = true; 
+            }else{
+                continua = false;
+
+                podio.push_back(competidores[i]);
+            }
+        }
+        cout<<"=============\n";
+        
+        usleep(1000);
+    }while(continua);
+    
+
+    ventanaL();
+}
+
+#endif
+
+//pantalla_w.hpp
+#ifndef MENU_H
+#define MENU_H
+#include "sistema.hpp"
+#include<stdio.h>
+#include<iostream>
+#include <conio.h> 
+#include <windows.h>
+
+using namespace std;
+
+void interaccion_competidores();
+void ajuste_meta();
+void ajuste_vueltas();
+void iniciar_carrera();
+
+void ventana(){
+    int op;
+    do{
+        std::cout<<"\t\t\t\t\tCARRERAS DE CONEJOS\n";
+        std::cout<<"\t\t\t 1. Iniciar carrera\n";
+        std::cout<<"\t\t\t 2. cambiar cantidad de competidores\n";
+        std::cout<<"\t\t\t 3. cambiar distancia de la meta\n";
+        std::cout<<"\t\t\t 4. cambiar cantidad de vueltas\n";
+        std::cout<<"\t\t\t 5. salir\n";
+        cin>>op;
+
+    }while(op<1 || op>5);
+    switch (op)
+    {
+    case 1:
+        iniciar_carrera();
+        break;
+    case 2:
+        interaccion_competidores();
+        break;
+    case 3:
+        ajuste_meta();
+        break;
+    case 4:
+        ajuste_vueltas();
+        break;
+    case 5:
+        cout<<"bye bye >(x)";
+        break;
+    }
+
+
+}
+
+void interaccion_competidores(){
+    cout<<"actualmente tiene "<<competidores.size()<<"competidores\n";
+    cout<<"que accion quiere realizar\n ";
+    int op2;
+    //verifica que elige entre las opciones entregadas
+    do{
+        cout<<"1.agregar competidores\n2.eliminar competidores\n3.volver";
+        cin>>op2;
+    }while(op2!=1 || op2!=2 || op2!=3);
+    
+    //en funcion de que elija agregara o quitara corredores
+    int n; 
+    switch (op2)
+    {
+    case 1:
+        cout<<"cuantos miembros quiere agregar: ";
+           cin>>n;
+        aumentar_competidores(n);
+        break;
+    case 2:
+        cout<<"cuantos miembros quiere eliminar: ";
+        cin>>n;
+        reducir_competidores(n);
+        break;        
+    }
+    ventana();
+}
+
+void ajuste_meta(){
+    cout<<"donde quiere ubicar la meta (ingrese un numero mayor a 10 para crear un cambio)\nactualmente la meta esta a "<<meta<<" metros\n\t\t";
+    
+    int n;
+    cin>>n;    
+    if(n >= 10){
+        meta = n;
+    }
+    ventana();
+}
+
+void ajuste_vueltas(){
+    cout<<"cuantas vueltas quiere que realicen los conejos\nactualmente los conejos realizaran "<<cantidad_vueltas<<"\n\t\t\t";
+    int n;
+    cin>>n;
+    if(n > 0){
+        cantidad_vueltas = n;
+    }
+    ventana();
+}
+
+void iniciar_carrera(){
+    bool continua = true;
+    do{
+        for(int i = 0;i<competidores.size();i++){
+            competidores[i].completo = estado_competidor(i); //revisa como va el corredor
+            if(!competidores[i].completo){ //si no a completado su carrera avanza
+                competidores[i].posicion += rand()%2;  
+                continua = true; 
+            }else{
+                continua = false;
+
+                podio.push_back(competidores[i]);
+            }
+        }
+        cout<<"=============\n";
+        
+        Sleep(5);
+    }while(continua);
+    
+
+    ventana();
+}
+
+#endif
+// sistema.hpp
+#ifndef SISTEMA_HPP
+#define SISTEMA_HPP
+
+#include <algorithm>
+#include <vector>
+#include <pthread.h>
+#include <unistd.h>
+
+using namespace std;
+
+typedef struct {
+    char forma; 
+    int posicion; 
+    int vueltas; 
+    bool completo;
+} conejo;
+
+vector<conejo> competidores;
+vector<conejo> podio;
+int Lmeta = 30; 
+int cantidad_vueltas = 3; 
+
+void hilo_carrera() {
+    while (mi_conejo->posicion < 100) {
+        mi_conejo->posicion += rand() % 5;
+        usleep(100000); 
+    }
+    mi_conejo->completo = true;
+    pthread_exit(NULL);
+}
+
+void iniciar_carreras() {
+   
+    vector<pthread_t> hilos;
+    for (int i = 0; i < competidores.size(); i++) {
+        pthread_t hilo;
+        pthread_create(&hilo, NULL, hilo_carrera, (void*)&competidores[i]);
+        hilos.push_back(hilo);
+    }
+
+    
+    for (int i = 0; i < hilos.size(); i++) {
+        pthread_join(hilos[i], NULL);
+    }
+}
+
+void aumentar_competidores(int cants) {
+    if (cants >= 0) {
+        for (int i = 0; i < cants; i++) {
+            conejo aux;
+            aux.forma = rand() % 79 + 47;
+            aux.posicion = 0;
+            aux.vueltas = 1;
+            competidores.push_back(aux);
+        }
+    }
+}
+
+void reducir_competidores(int cants) {
+    if (cants >= 0) {
+        for (int i = 0; i < cants; i++)
+            competidores.pop_back();
+    }
+}
+
+bool estado_competidor(int i) {
+    if (competidores[i].vueltas == cantidad_vueltas) {
+        if (competidores[i].posicion >= Lmeta) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        if (competidores[i].posicion >= Lmeta) {
+            competidores[i].vueltas = competidores[i].vueltas + 1;
+            competidores[i].posicion = 0;
+        }
+        return false;
+    }
+}
+
+#endif
+
+//sistema.cpp ignora esto son mis intentos por intentar ver que mierda es un hilo e intentar aplicarlo
+#include <iostream>
+#include <vector>
+#include <pthread.h>
+#include <unistd.h>
+
+using namespace std;
+
+typedef struct {
+    char forma; 
+    int posicion; 
+    int vueltas; 
+    bool completo;
+} conejo;
+
+vector<conejo> competidores;
+vector<conejo> podio;
+
+void* hilo_carrera(void* arg);
+
+void inicializar_competidores();
+void* crear_hilo_conejo(void* arg);
+void esperar_hilos(vector<pthread_t>& hilos);
+void imprimir_resultados();
+
+int main() {
+    srand(time(NULL)); 
+
+    inicializar_competidores();
+
+
+    vector<pthread_t> hilos;
+    for (int i = 0; i < competidores.size(); i++) {
+        pthread_t hilo;
+        pthread_create(&hilo, NULL, crear_hilo_conejo, (void*)&competidores[i]);
+        hilos.push_back(hilo);
+    }
+
+   
+    esperar_hilos(hilos);
+
+   
+    imprimir_resultados();
+
+    return 0;
+}
+
+void inicializar_competidores() {
+  
+    for(char forma = 'A'; forma <= 'Z'; forma++) {
+        conejo c;
+        c.forma = forma;
+        c.posicion = 0;
+        c.vueltas = 0;
+        c.completo = false;
+        competidores.push_back(c);
+    }
+}
+
+void* crear_hilo_conejo() {
+    conejo* mi_conejo = (conejo*)arg;
+    while (mi_conejo->posicion < 100) {
+        mi_conejo->posicion += rand() % 5;
+        usleep(100000); 
+    }
+    mi_conejo->completo = true;
+    pthread_exit(NULL);
+}
+
+void esperar_hilos(vector<pthread_t>& hilos) {
+  
+    for (int i = 0; i < hilos.size(); i++) {
+        pthread_join(hilos[i], NULL);
+    }
+}
+
+void imprimir_resultados() {
+    
+    for (int i = 0; i < competidores.size(); i++) {
+        cout << "Conejo " << competidores[i].forma << ": ";
+        if (competidores[i].completo) {
+            cout << "¡Ha completado la carrera!" << endl;
+        } else {
+            cout << "No ha completado la carrera." << endl;
+        }
+    }
+}

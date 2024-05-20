@@ -2,18 +2,23 @@
 #define SISTEMA_HPP
 
 #include <algorithm>
-#include<vector>
+#include <vector>
+#include <thread>
+#include <mutex>
+#include <iostream>
+#include <chrono>
+#include <random>
+
 using namespace std;
 
-
-typedef struct{
-    char forma; //como se ve
-    int posicion; //cuanto a recorrido en una vuelta
-    int vueltas; //cuantas vueltas a llevado
+typedef struct {
+    char forma; 
+    int posicion; 
+    int vueltas; 
     bool completo;
-}conejo;
+} conejo;
 
-vector<conejo> competidores; //vector con toda la informacion que sera almacenada
+vector<conejo> competidores;
 vector<conejo> podio;
 int Lmeta=30; // distancia a la que estara la meta
 int cantidad_vueltas = 3; //cantidad de vueltas necesarias para ganar
@@ -56,9 +61,31 @@ bool estado_competidor(int i){ //revisara si ya a completado la carrera
         }
         return false; //no
     }
-
 }
 
+void lanzar_iniciar_carrera() {
+    std::thread carrera_thread(iniciar_carrera);
+    carrera_thread.join();
+}
 
+void aumentar_competidores(int cants) {
+    if (cants >= 0) {
+        for (int i = 0; i < cants; i++) {
+            conejo aux;
+            aux.forma = rand() % 79 + 47;
+            aux.posicion = 0;
+            aux.vueltas = 0;
+            aux.completo = false;
+            competidores.push_back(aux);
+        }
+    }
+}
+
+void reducir_competidores(int cants) {
+    if (cants >= 0) {
+        for (int i = 0; i < cants; i++)
+            competidores.pop_back();
+    }
+}
 
 #endif
