@@ -6,7 +6,7 @@
 #include <ncurses.h>
 #include <unistd.h>
 #include<pthread.h>
-
+#include <mutex>
 using namespace std;
 
 void interaccion_competidores();
@@ -126,6 +126,7 @@ int terminados;
        terminados = 0;
         erase();
         for(int i = 0;i<competidores.size();i++){ //corre a cada conejo 
+            std::lock_guard<std::mutex> lock(mtx);
             competidores[i].completo = estado_competidor(i); //revisa como va el corredor
             if(!competidores[i].completo){ //si no a completado su carrera avanza
                 competidores[i].posicion += rand()%2;  
@@ -142,6 +143,7 @@ int terminados;
         }
         refresh();
         usleep(10000);
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }while(terminados != competidores.size()); //cuando el podio tenga la misma cantidad de wueyes que competidores tiene la carrera para
 
     getch();
