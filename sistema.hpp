@@ -27,8 +27,9 @@ void aumentar_competidores(int cants){ // aumenta la cantidad de competidores
             conejo aux;
             aux.forma = rand()%79 + 47;
             aux.posicion = 0;
-            aux.vueltas = 1;
-            competidores.push_back(aux);
+            aux.vueltas = 0;
+            aux.completo = false;
+            competidores.push_back(aux); //lo agrega a la lista de los competidores
         }
     }
 }
@@ -41,18 +42,19 @@ void reducir_competidores(int cants){
 }
 
 bool estado_competidor(int i){ //revisara si ya a completado la carrera
-    if(competidores[i].vueltas == cantidad_vueltas ){
-        if(competidores[i].posicion >= Lmeta){
-            return true;
+    if(competidores[i].vueltas > cantidad_vueltas-1 ){ //esta en la ultima vuelta?
+        if(competidores[i].posicion >= Lmeta){ //llego a la meta?
+            competidores[i].posicion = Lmeta+1; //el conejo se detiene un paso afuera de la meta
+            return true; //si
         }else{
-            return false;
+            return false; //no
         }
-    }else{
-        if(competidores[i].posicion >= Lmeta){
-            competidores[i].vueltas = competidores[i].vueltas +1 ;
+    }else{   //no llego a la ultima vuelta
+        if(competidores[i].posicion >= Lmeta){ //llego a la meta? 
+            competidores[i].vueltas = competidores[i].vueltas +1 ; //le agrega una vuelta al competidor 
             competidores[i].posicion = 0;
         }
-        return false;
+        return false; //no
     }
 
 }

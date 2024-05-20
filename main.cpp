@@ -21,7 +21,7 @@ pthread_mutex_t pantalla;
 int main(){
     srand(time(NULL));
     //ejemplo simplificado de como funcionaria hipodromo
-    aumentar_competidores(4);
+    aumentar_competidores(12);
 
 #ifdef __linux__ 
     initscr();
@@ -29,7 +29,6 @@ int main(){
     endwin();
 
 #elif _WIN32
-
 
     aumentar_competidores(4);
 
