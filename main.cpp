@@ -21,24 +21,15 @@ pthread_mutex_t pantalla;
 int main(){
     srand(time(NULL));
     //ejemplo simplificado de como funcionaria hipodromo
-    aumentar_competidores(4);
-    // Lanzar el hilo para iniciar la carrera
-    std::thread carrera_thread(lanzar_iniciar_carrera);
-
-    // Esperar un tiempo antes de finalizar la carrera
-    std::this_thread::sleep_for(std::chrono::seconds(10));
-
-    // Detener la carrera
-    carrera_thread.join();
-    
+    aumentar_competidores(5);
+    Lmeta =70;
+    cantidad_vueltas = 5;
 #ifdef __linux__ 
     initscr();
     ventanaL();
     endwin();
 
 #elif _WIN32
-
-    aumentar_competidores(4);
 
     ventana();
 

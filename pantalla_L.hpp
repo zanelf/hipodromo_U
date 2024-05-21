@@ -6,7 +6,7 @@
 #include <ncurses.h>
 #include <unistd.h>
 #include<pthread.h>
-#include <mutex>
+#include<stdlib.h>       //bibliotecas funciones estandar
 using namespace std;
 
 void interaccion_competidores();
@@ -14,6 +14,10 @@ void ajuste_Lmeta();
 void ajuste_vueltas();
 void iniciar_carrera();
 void ventanaL();
+
+void* hacer_correr_conejo(conejo * corredor);
+
+pthread_mutex_t pantalla; 
 
 void ventanaL(){
     erase();
@@ -34,8 +38,8 @@ void ventanaL(){
     
     switch (op) {
         case 1:
-            pthread_t hilo;
-            pthread_create(&hilo, NULL, iniciar_carrera, NULL);
+            // completar mas tarde 
+            iniciar_carrera();
             break;
         case 2:
             interaccion_competidores();
@@ -60,6 +64,8 @@ void interaccion_competidores(){
         mvprintw(4,16,"1.agregar competidores");
         mvprintw(5,16,"2.eliminar competidores");
         mvprintw(6,16,"3.volver\n");
+
+        mvprintw(8,16,"por limitaciones de codigo favor de no modificar la cantidad de competidores");
         refresh();
     //verifica que elige entre las opciones entregadas
     do{
@@ -121,33 +127,54 @@ void iniciar_carrera(){
         podio.pop_back();
     }
 
-int terminados;
+    erase();
+  pthread_mutex_init (&pantalla, NULL);     //inicializa variable pantalla tipo mutex
+
+
+    int eror1,eror2,eror3,eror4,eror5;                        //para verificar error al crear el thread
+    pthread_t idHilo1,idHilo2,idHilo3,idHilo4,idHilo5;                //identificador del thread hijo
+
+
+        //inicializacion de los hilos y configuracion inicial 
+        eror1=pthread_create(&idHilo1, NULL, &hacer_correr_conejo, &competidores[0]);
+        eror2=pthread_create(&idHilo2, NULL, &hacer_correr_conejo, &competidores[1]);
+        eror3=pthread_create(&idHilo3, NULL, &hacer_correr_conejo, &competidores[2]);
+        eror4=pthread_create(&idHilo4, NULL, &hacer_correr_conejo, &competidores[3]);
+        eror5=pthread_create(&idHilo5, NULL, &hacer_correr_conejo, &competidores[4]);
+
+        pthread_join(idHilo1 , NULL);
+        pthread_join(idHilo2 , NULL);
+        pthread_join(idHilo3 , NULL);
+        pthread_join(idHilo4 , NULL);
+        pthread_join(idHilo5 , NULL);
+       getch();
+
+        pthread_mutex_destroy(&pantalla);      
+    ventanaL();
+}
+
+
+void *hacer_correr_conejo(conejo * corredor){ // hace que un conejo empiece a correr por el campo
     do{
-       terminados = 0;
+        pthread_mutex_lock(&pantalla);
         erase();
-        for(int i = 0;i<competidores.size();i++){ //corre a cada conejo 
-            std::lock_guard<std::mutex> lock(mtx);
-            competidores[i].completo = estado_competidor(i); //revisa como va el corredor
-            if(!competidores[i].completo){ //si no a completado su carrera avanza
-                competidores[i].posicion += rand()%2;  
-            }else{//si completo su carrera
-                terminados++;
-                podio.push_back(competidores[i]); //lo mete al podio
+            corredor->completo = estado_competidor(corredor); //revisa como va el corredor
+            if(!corredor->completo){ //si no a completado su carrera avanza
+                corredor->posicion += rand()%2;  
             }
-            mvprintw(i,competidores[i].posicion,"%c",competidores[i].forma);
-            mvprintw(i,Lmeta,"|");
 
-                mvprintw(competidores.size()+1+i,4,"%c || distancia: %d || vueltas: %d || termino: %d",competidores[i].forma,competidores[i].posicion,competidores[i].vueltas,competidores[i].completo);
-                mvprintw(competidores.size()*2+4,4,"han terminado %d de %ld & %d",terminados,competidores.size(), (terminados == competidores.size()));
+            mvprintw(corredor->carril,corredor->posicion,"%c",corredor->forma);
+            mvprintw(corredor->carril,Lmeta,"|");
 
-        }
+                mvprintw(competidores.size()+1+corredor->carril,4,"%c || distancia: %d || vueltas: %d || termino: %d",competidores[i].forma,competidores[i].posicion,competidores[i].vueltas,competidores[i].completo);
+ 
+        
         refresh();
         usleep(10000);
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
-    }while(terminados != competidores.size()); //cuando el podio tenga la misma cantidad de wueyes que competidores tiene la carrera para
+        pthread_mutex_unlock(&pantalla);
+        //std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    }while(!corredor->completo);
 
-    getch();
-    ventanaL();
 }
 
 #endif

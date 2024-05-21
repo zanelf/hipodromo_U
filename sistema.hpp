@@ -13,6 +13,7 @@ using namespace std;
 
 typedef struct {
     char forma; 
+    int carril;
     int posicion; 
     int vueltas; 
     bool completo;
@@ -32,6 +33,7 @@ void aumentar_competidores(int cants){ // aumenta la cantidad de competidores
             conejo aux;
             aux.forma = rand()%79 + 47;
             aux.posicion = 0;
+            aux.carril = i;
             aux.vueltas = 0;
             aux.completo = false;
             competidores.push_back(aux); //lo agrega a la lista de los competidores
@@ -63,29 +65,27 @@ bool estado_competidor(int i){ //revisara si ya a completado la carrera
     }
 }
 
-void lanzar_iniciar_carrera() {
-    std::thread carrera_thread(iniciar_carrera);
-    carrera_thread.join();
-}
-
-void aumentar_competidores(int cants) {
-    if (cants >= 0) {
-        for (int i = 0; i < cants; i++) {
-            conejo aux;
-            aux.forma = rand() % 79 + 47;
-            aux.posicion = 0;
-            aux.vueltas = 0;
-            aux.completo = false;
-            competidores.push_back(aux);
+bool estado_competidor(conejo * corredor){ //revisara si ya a completado la carrera
+    if(corredor->vueltas > cantidad_vueltas-1 ){ //esta en la ultima vuelta?
+        if(corredor->posicion >= Lmeta){ //llego a la meta?
+            corredor->posicion = Lmeta+1; //el conejo se detiene un paso afuera de la meta
+            return true; //si
+        }else{
+            return false; //no
         }
+    }else{   //no llego a la ultima vuelta
+        if(corredor->posicion >= Lmeta){ //llego a la meta? 
+            corredor->vueltas = corredor->vueltas +1 ; //le agrega una vuelta al competidor 
+            corredor->posicion = 0;
+        }
+        return false; //no
     }
 }
 
-void reducir_competidores(int cants) {
-    if (cants >= 0) {
-        for (int i = 0; i < cants; i++)
-            competidores.pop_back();
-    }
+void lanzar_iniciar_carrera() {
+    //std::thread carrera_thread(iniciar_carrera);
+    //carrera_thread.join();
 }
+
 
 #endif
